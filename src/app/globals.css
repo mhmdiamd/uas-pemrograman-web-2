@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-neo-primary: #84A98C;
+  --color-neo-secondary: #E8D8C3;
+  --color-neo-accent: #D8A48F;
+  --color-neo-bg: #F5F5F0;
+  --color-neo-text: #2F3E46;
+  --font-sans: var(--font-space-grotesk), sans-serif;
+  --font-display: var(--font-lexend-mega), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-neo-bg);
+    color: var(--color-neo-text);
+    background-image: radial-gradient(#d1d1d1 2px, transparent 0);
+    background-size: 30px 30px;
+    font-family: var(--font-sans);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .neo-border {
+    border: 3px solid var(--color-neo-text);
+  }
+  
+  .neo-shadow {
+    box-shadow: 5px 5px 0px 0px var(--color-neo-text);
+  }
+  
+  .neo-shadow-sm {
+    box-shadow: 3px 3px 0px 0px var(--color-neo-text);
+  }
+  
+  .neo-shadow-hover {
+    transition: all 0.15s ease-in-out;
+  }
+  
+  .neo-shadow-hover:hover {
+    box-shadow: 2px 2px 0px 0px var(--color-neo-text);
+    transform: translate(3px, 3px);
+  }
+  
+  .neo-shadow-hover:active {
+    box-shadow: 0px 0px 0px 0px var(--color-neo-text);
+    transform: translate(5px, 5px);
+  }
 }
