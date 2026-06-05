@@ -186,14 +186,14 @@ export function DataTable<TData, TValue>({
           />
         </div>
       </div>
-      <div className="w-full bg-transparent md:bg-white md:overflow-x-auto md:neo-border md:neo-shadow">
+      <div className="w-full bg-transparent md:bg-white md:overflow-x-auto md:border-[3px] md:border-[var(--color-neo-text)] md:shadow-[4px_4px_0px_0px_var(--color-neo-text)]">
         <table className="w-full text-left border-collapse block md:table">
-          <thead className="hidden md:table-header-group bg-[var(--color-neo-secondary)] border-b-3 border-neo-text">
+          <thead className="hidden md:table-header-group bg-[var(--color-neo-secondary)] border-b-[3px] border-[var(--color-neo-text)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} className={`px-6 py-4 font-bold border-r-3 border-neo-text last:border-r-0 ${header.column.id === 'actions' ? 'text-center' : ''}`}>
+                    <th key={header.id} className={`px-6 py-4 font-bold border-r-[3px] border-[var(--color-neo-text)] last:border-r-0 ${header.column.id === 'actions' ? 'text-center' : ''}`}>
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
@@ -224,14 +224,14 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="block md:table-row bg-white neo-border mb-4 md:mb-0 md:border-t-0 md:border-l-0 md:border-r-0 md:border-b-3 border-neo-text md:last:border-b-0 hover:bg-gray-50 transition-colors p-4 md:p-0 shadow-[4px_4px_0px_0px_var(--color-neo-text)] md:shadow-none"
+                  className="block md:table-row bg-white border-[3px] border-[var(--color-neo-text)] mb-4 md:mb-0 md:border-t-0 md:border-l-0 md:border-r-0 md:border-b-[3px] md:last:border-b-0 hover:bg-gray-50 transition-colors p-4 md:p-0 shadow-[4px_4px_0px_0px_var(--color-neo-text)] md:shadow-none"
                 >
                   {row.getVisibleCells().map((cell) => {
                     const headerContent = cell.column.columnDef.header;
                     const label = typeof headerContent === 'string' ? headerContent : (cell.column.id === 'select' ? '' : cell.column.id);
                     
                     return (
-                      <td key={cell.id} className={`block md:table-cell px-0 py-3 md:px-6 md:py-4 border-b-2 border-dashed border-gray-200 md:border-b-0 md:border-solid md:border-r-3 md:border-neo-text last:border-r-0 last:border-b-0 ${cell.column.id === 'actions' ? 'md:text-center mt-2 md:mt-0 flex justify-end md:table-cell' : 'flex flex-col md:table-cell gap-1'}`}>
+                      <td key={cell.id} className={`block md:table-cell px-0 py-3 md:px-6 md:py-4 border-b-2 border-dashed border-gray-200 md:border-b-0 md:border-solid md:border-r-[3px] md:border-[var(--color-neo-text)] last:border-r-0 md:last:border-b-0 ${cell.column.id === 'actions' ? 'md:text-center mt-2 md:mt-0 flex justify-end md:table-cell' : 'flex flex-col md:table-cell gap-1'}`}>
                         {label && (
                           <span className="md:hidden font-bold text-xs uppercase tracking-wider text-neo-text/60">
                             {label}

@@ -3,13 +3,14 @@ import { notFound } from 'next/navigation';
 import AssetDetailClient from './AssetDetailClient';
 
 interface AssetPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function AssetPage({ params }: AssetPageProps) {
-  const asset = await getPublicAssetDetails(params.id);
+  const { id } = await params;
+  const asset = await getPublicAssetDetails(id);
 
   if (!asset) {
     notFound();
