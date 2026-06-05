@@ -20,6 +20,7 @@ interface SelectProps {
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   ({ options, value, onChange, placeholder = "Select an option", className = '', error }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [rect, setRect] = useState<DOMRect | null>(null);
     const selectRef = useRef<HTMLDivElement>(null);
 
     const selectedOption = options.find((opt) => opt.value === value);
@@ -30,17 +31,34 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           setIsOpen(false);
         }
       };
+      const handleScroll = () => {
+        setIsOpen(false);
+      };
+      
       if (isOpen) {
         document.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener('scroll', handleScroll, true);
+        window.addEventListener('resize', handleScroll);
       }
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        window.removeEventListener('scroll', handleScroll, true);
+        window.removeEventListener('resize', handleScroll);
+      };
     }, [isOpen]);
+
+    const toggleOpen = () => {
+      if (!isOpen && selectRef.current) {
+        setRect(selectRef.current.getBoundingClientRect());
+      }
+      setIsOpen(!isOpen);
+    };
 
     return (
       <div className={`relative ${className}`} ref={selectRef}>
         <div
           ref={ref}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleOpen}
           className={`w-full bg-white px-4 py-2.5 text-neo-text neo-border neo-shadow-sm cursor-pointer flex justify-between items-center transition-shadow hover:shadow-[4px_4px_0px_0px_var(--color-neo-primary)] ${
             error ? 'border-[var(--color-neo-accent)] shadow-[4px_4px_0px_0px_var(--color-neo-accent)]' : ''
           }`}
@@ -58,13 +76,20 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         </div>
 
         <AnimatePresence>
-          {isOpen && (
+          {isOpen && rect && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ type: 'spring', bounce: 0.4, duration: 0.4 }}
-              className="absolute z-50 w-full mt-2 bg-white neo-border shadow-[4px_4px_0px_0px_var(--color-neo-text)] max-h-60 overflow-y-auto origin-top"
+              style={{
+                position: 'fixed',
+                top: rect.bottom + 8,
+                left: rect.left,
+                width: rect.width,
+                zIndex: 99999
+              }}
+              className="bg-white neo-border shadow-[4px_4px_0px_0px_var(--color-neo-text)] max-h-60 overflow-y-auto origin-top"
             >
               {options.map((option) => (
                 <div

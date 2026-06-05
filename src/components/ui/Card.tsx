@@ -120,10 +120,15 @@ export const MetricCard = ({
       <h3 className="text-lg font-bold border-b-3 border-neo-text pb-1 inline-block">{title}</h3>
       {icon && <div className="p-2 bg-white neo-border shadow-[2px_2px_0px_0px_var(--color-neo-text)]">{icon}</div>}
     </div>
-    <div className="flex items-end justify-between mt-auto">
-      <p className="text-5xl font-display font-black tracking-tighter">{value}</p>
+    <div className="flex items-end justify-between mt-auto w-full min-w-0">
+      <p 
+        className="text-2xl font-display font-black tracking-tighter truncate flex-1 pr-2"
+        title={String(value)}
+      >
+        {value}
+      </p>
       {trend && (
-        <div className={`flex items-center gap-1 font-bold px-2 py-1 neo-border shadow-[2px_2px_0px_0px_var(--color-neo-text)] text-sm ${trend.isPositive ? 'bg-[var(--color-neo-primary)] text-neo-text' : 'bg-red-400 text-neo-text'}`}>
+        <div className={`flex items-center gap-1 font-bold px-2 py-1 neo-border shadow-[2px_2px_0px_0px_var(--color-neo-text)] text-sm shrink-0 ${trend.isPositive ? 'bg-[var(--color-neo-primary)] text-neo-text' : 'bg-red-400 text-neo-text'}`}>
           {trend.isPositive ? (
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
           ) : (

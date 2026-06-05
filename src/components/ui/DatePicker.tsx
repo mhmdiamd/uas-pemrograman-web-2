@@ -17,6 +17,7 @@ export const DatePicker = ({ label, value, onChange, className = '', placeholder
   const [isOpen, setIsOpen] = useState(false);
   const [currentViewDate, setCurrentViewDate] = useState(value || new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
+  const [rect, setRect] = useState<DOMRect | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,9 +33,21 @@ export const DatePicker = ({ label, value, onChange, className = '', placeholder
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    const handleScroll = () => {
+      setIsOpen(false);
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('scroll', handleScroll, true);
+      window.addEventListener('resize', handleScroll);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [isOpen]);
 
   const year = currentViewDate.getFullYear();
   const month = currentViewDate.getMonth();
@@ -62,6 +75,13 @@ export const DatePicker = ({ label, value, onChange, className = '', placeholder
   const formatDate = (date?: Date) => {
     if (!date) return '';
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+  };
+
+  const toggleOpen = () => {
+    if (!isOpen && containerRef.current) {
+      setRect(containerRef.current.getBoundingClientRect());
+    }
+    setIsOpen(!isOpen);
   };
 
   // Generate calendar days
@@ -98,7 +118,7 @@ export const DatePicker = ({ label, value, onChange, className = '', placeholder
       
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         className="w-full flex items-center justify-between px-4 py-3 bg-white neo-border shadow-[4px_4px_0px_0px_var(--color-neo-text)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-neo-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-neo-accent)] focus:-translate-y-1 focus:shadow-[6px_6px_0px_0px_var(--color-neo-text)] transition-all text-left font-bold cursor-pointer"
       >
         <span className={selectedDate ? 'text-neo-text' : 'text-gray-500 font-normal'}>
@@ -112,8 +132,16 @@ export const DatePicker = ({ label, value, onChange, className = '', placeholder
         </svg>
       </button>
 
-      {isOpen && (
-        <div className="absolute z-50 top-full mt-2 left-0 bg-white neo-border p-4 shadow-[8px_8px_0px_0px_var(--color-neo-text)] min-w-[300px]">
+      {isOpen && rect && (
+        <div 
+          className="bg-white neo-border p-4 shadow-[8px_8px_0px_0px_var(--color-neo-text)] min-w-[300px]"
+          style={{
+            position: 'fixed',
+            top: rect.bottom + 8,
+            left: rect.left,
+            zIndex: 99999
+          }}
+        >
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-[var(--color-neo-secondary)] neo-border cursor-pointer">

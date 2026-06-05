@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model TransactionType {
+  id            String                 @id @default(uuid())
+  name          String                 @unique
+  foundationId  String?
+  transactions  InventoryTransaction[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  @@map("m_transaction_type")
+}
+
+model Building {
+  id            String   @id @default(uuid())
+  name          String
+  foundationId  String?
+  rooms         Room[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("m_buildings")
+}
+
+model Room {
+  id             String          @id @default(uuid())
+  name           String
+  floor          String?
+  buildingId     String
+  building       Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  inventoryRooms InventoryRoom[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("m_rooms")
+}
+
+model ItemType {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  foundationId  String?
+  items         Item[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("m_item_types")
+}
+
+model Item {
+  id                String      @id @default(uuid())
+  name              String
+  unit              String?
+  itemTypeId        String?
+  itemType          ItemType?   @relation(fields: [itemTypeId], references: [id], onDelete: SetNull)
+  usefulLifeMonths  Int         @default(60) // 5 years default for depreciation
+  inventory         Inventory[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("m_items")
+}
+
+model InventoryTransaction {
+  id                String           @id @default(uuid())
+  transactionDate   DateTime         @db.Date
+  transactionNumber String           @unique
+  status            String           @default("COMPLETED")
+  startDate         DateTime?        @db.Date
+  endDate           DateTime?        @db.Date
+  evidenceFile      String?
+  sourceOfFunds     String?
+  totalBudget       Decimal?         @db.Decimal(15, 2)
+  budgetRealization Decimal?         @db.Decimal(15, 2)
+  transactionTypeId String
+  transactionType   TransactionType  @relation(fields: [transactionTypeId], references: [id], onDelete: Restrict)
+  inventories       Inventory[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@map("t_inventory_transactions")
+}
+
+model Inventory {
+  id                     String                @id @default(uuid())
+  quantity               Int                   @default(0)
+  price                  Decimal               @default(0) @db.Decimal(15, 2)
+  salvageValue           Decimal               @default(0) @db.Decimal(15, 2)
+  specification          String?               @db.Text
+  status                 String                @default("GOOD")
+  photo                  String?
+  description            String?               @db.Text
+  merk                   String?
+  barcode                String?
+  expiredDate            DateTime?             @db.Date
+  purchaseDate           DateTime              @default(now()) @db.Date
+  itemId                 String
+  item                   Item                  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  inventoryTransactionId String?
+  transaction            InventoryTransaction? @relation(fields: [inventoryTransactionId], references: [id], onDelete: SetNull)
+  inventoryRooms         InventoryRoom[]
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+
+  @@map("t_inventory")
+}
+
+model InventoryRoom {
+  id            String    @id @default(uuid())
+  quantity      Int       @default(1)
+  status        String    @default("ACTIVE")
+  inventoryDate DateTime  @default(now()) @db.Date
+  inventoryId   String
+  inventory     Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  roomId        String
+  room          Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("t_inventory_room")
+}

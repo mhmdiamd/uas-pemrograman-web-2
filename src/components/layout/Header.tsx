@@ -6,6 +6,16 @@ import { Button } from '../ui/Button';
 import { Popover } from '../ui/Popover';
 import { Badge } from '../ui/Badge';
 
+import { useSidebar } from '@/contexts/SidebarContext';
+
+const MenuIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+);
+
 const BellIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -13,26 +23,39 @@ const BellIcon = () => (
   </svg>
 );
 
-export const Header = () => {
+export const Header = ({ user }: { user?: { name?: string | null, email?: string } | null }) => {
   const pathname = usePathname();
+  const { toggleMobile } = useSidebar();
   
   // Create a simple breadcrumb from the pathname
   const paths = pathname === '/' ? ['Dashboard'] : pathname.split('/').filter(p => p);
   
+  const userName = user?.name || 'Unknown User';
+  const userEmail = user?.email || 'No email';
+  const initials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '??';
+
   return (
-    <header className="bg-white border-b-3 border-t-3 border-neo-text px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm h-[91px]">
-      <div className="flex items-center gap-2">
-        {paths.map((p, index) => (
-          <React.Fragment key={index}>
-            <span className="text-2xl font-black capitalize text-neo-text">
-              {p.replace('-', ' ')}
-            </span>
-            {index < paths.length - 1 && <span className="text-2xl font-black mx-1 opacity-50">/</span>}
-          </React.Fragment>
-        ))}
+    <header className="bg-white border-b-3 border-t-3 border-neo-text px-4 md:px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm h-[80px] md:h-[91px]">
+      <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
+        <button 
+          onClick={toggleMobile}
+          className="md:hidden p-2 neo-border bg-white active:translate-y-0 active:shadow-none transition-all cursor-pointer shrink-0"
+        >
+          <MenuIcon />
+        </button>
+        <div className="flex items-center gap-1 md:gap-2 overflow-hidden truncate">
+          {paths.map((p, index) => (
+            <React.Fragment key={index}>
+              <span className="text-xl md:text-2xl font-black capitalize text-neo-text truncate">
+                {p.replace('-', ' ')}
+              </span>
+              {index < paths.length - 1 && <span className="text-xl md:text-2xl font-black mx-1 opacity-50 shrink-0">/</span>}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
 
-      <div className="flex items-center space-x-8">
+      <div className="flex items-center space-x-4 md:space-x-8 shrink-0">
         
         {/* Notifications Popover */}
         <Popover 
@@ -67,24 +90,28 @@ export const Header = () => {
           position="bottom-right" 
           trigger={
             <div className="cursor-pointer w-12 h-12 bg-[var(--color-neo-primary)] neo-border flex items-center justify-center font-black text-xl shadow-[4px_4px_0px_0px_var(--color-neo-text)] transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-neo-text)] active:translate-y-0 active:shadow-none">
-              AD
+              {initials}
             </div>
           }
         >
           <div className="w-64 font-bold flex flex-col p-2 text-left">
             <div className="flex items-center gap-3 border-b-3 border-neo-text pb-4 mb-2">
                <div className="w-12 h-12 bg-[var(--color-neo-primary)] neo-border flex items-center justify-center font-black text-xl shrink-0 shadow-[2px_2px_0px_0px_var(--color-neo-text)]">
-                AD
+                {initials}
               </div>
               <div className="overflow-hidden">
-                <p className="text-lg truncate">Admin User</p>
-                <p className="text-sm opacity-60 truncate">admin@system.local</p>
+                <p className="text-lg truncate">{userName}</p>
+                <p className="text-sm opacity-60 truncate">{userEmail}</p>
               </div>
             </div>
-            <button className="text-left px-4 py-2 hover:bg-[var(--color-neo-secondary)] transition-colors neo-border border-transparent hover:border-neo-text mt-1">Profile Settings</button>
-            <button className="text-left px-4 py-2 hover:bg-[var(--color-neo-secondary)] transition-colors neo-border border-transparent hover:border-neo-text mt-1">System Logs</button>
-            <div className="border-t-3 border-neo-text my-2"></div>
-            <button className="text-left px-4 py-2 bg-[var(--color-neo-accent)] hover:opacity-90 transition-opacity neo-border mt-1 text-neo-text shadow-[2px_2px_0px_0px_var(--color-neo-text)] hover:shadow-[4px_4px_0px_0px_var(--color-neo-text)] hover:-translate-y-0.5">Log Out</button>
+            <button 
+              onClick={() => {
+                import('@/actions/auth').then((mod) => mod.logout());
+              }}
+              className="text-left px-4 py-2 cursor-pointer bg-[var(--color-neo-accent)] hover:opacity-90 transition-opacity neo-border mt-1 text-neo-text shadow-[2px_2px_0px_0px_var(--color-neo-text)] hover:shadow-[4px_4px_0px_0px_var(--color-neo-text)] hover:-translate-y-0.5"
+            >
+              Log Out
+            </button>
           </div>
         </Popover>
 

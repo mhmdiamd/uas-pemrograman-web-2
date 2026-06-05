@@ -1,12 +1,11 @@
 'use client';
 
-import { MainLayout } from '@/components/layout/MainLayout';
 import { ErrorHero } from '@/components/ui/ErrorHero';
 import { motion } from 'framer-motion';
 
 export default function NotFound() {
   return (
-    <MainLayout>
+    <div className="min-h-screen bg-neo-bg text-neo-text flex items-center justify-center p-4">
       <ErrorHero 
         code="404" 
         title="Page Not Found" 
@@ -30,6 +29,6 @@ export default function NotFound() {
           </svg>
         </motion.div>
       </ErrorHero>
-    </MainLayout>
+    </div>
   );
 }

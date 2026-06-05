@@ -186,20 +186,20 @@ export function DataTable<TData, TValue>({
           />
         </div>
       </div>
-      <div className="w-full overflow-x-auto neo-border neo-shadow bg-white">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-[var(--color-neo-secondary)] border-b-3 border-neo-text">
+      <div className="w-full bg-transparent md:bg-white md:overflow-x-auto md:neo-border md:neo-shadow">
+        <table className="w-full text-left border-collapse block md:table">
+          <thead className="hidden md:table-header-group bg-[var(--color-neo-secondary)] border-b-3 border-neo-text">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} className="px-6 py-4 font-bold border-r-3 border-neo-text last:border-r-0">
+                    <th key={header.id} className={`px-6 py-4 font-bold border-r-3 border-neo-text last:border-r-0 ${header.column.id === 'actions' ? 'text-center' : ''}`}>
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
                             className: header.column.getCanSort()
-                              ? 'cursor-pointer select-none flex items-center gap-2 hover:opacity-80'
-                              : 'flex items-center gap-2',
+                              ? `cursor-pointer select-none flex items-center gap-2 hover:opacity-80 ${header.column.id === 'actions' ? 'justify-center' : ''}`
+                              : `flex items-center gap-2 ${header.column.id === 'actions' ? 'justify-center' : ''}`,
                             onClick: header.column.getToggleSortingHandler(),
                           }}
                         >
@@ -219,23 +219,35 @@ export function DataTable<TData, TValue>({
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody className="block md:table-row-group">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-b-3 border-neo-text last:border-b-0 hover:bg-gray-50 transition-colors"
+                  className="block md:table-row bg-white neo-border mb-4 md:mb-0 md:border-t-0 md:border-l-0 md:border-r-0 md:border-b-3 border-neo-text md:last:border-b-0 hover:bg-gray-50 transition-colors p-4 md:p-0 shadow-[4px_4px_0px_0px_var(--color-neo-text)] md:shadow-none"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4 border-r-3 border-neo-text last:border-r-0">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const headerContent = cell.column.columnDef.header;
+                    const label = typeof headerContent === 'string' ? headerContent : (cell.column.id === 'select' ? '' : cell.column.id);
+                    
+                    return (
+                      <td key={cell.id} className={`block md:table-cell px-0 py-3 md:px-6 md:py-4 border-b-2 border-dashed border-gray-200 md:border-b-0 md:border-solid md:border-r-3 md:border-neo-text last:border-r-0 last:border-b-0 ${cell.column.id === 'actions' ? 'md:text-center mt-2 md:mt-0 flex justify-end md:table-cell' : 'flex flex-col md:table-cell gap-1'}`}>
+                        {label && (
+                          <span className="md:hidden font-bold text-xs uppercase tracking-wider text-neo-text/60">
+                            {label}
+                          </span>
+                        )}
+                        <div className={cell.column.id === 'actions' ? '' : 'w-full'}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
+                      </td>
+                    );
+                  })}
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={columns.length} className="h-24 text-center font-bold">
+              <tr className="block md:table-row bg-white neo-border shadow-[4px_4px_0px_0px_var(--color-neo-text)] md:shadow-none">
+                <td colSpan={columns.length} className="block md:table-cell h-24 text-center font-bold p-4">
                   No results.
                 </td>
               </tr>

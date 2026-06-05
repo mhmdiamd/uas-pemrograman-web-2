@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { MainLayout } from '@/components/layout/MainLayout';
 import { ErrorHero } from '@/components/ui/ErrorHero';
 import { motion } from 'framer-motion';
 
@@ -17,7 +16,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <MainLayout>
+    <div className="min-h-screen bg-neo-bg text-neo-text flex items-center justify-center p-4">
       <ErrorHero 
         code="500" 
         title="Server Error" 
@@ -45,6 +44,6 @@ export default function ErrorPage({
           </svg>
         </motion.div>
       </ErrorHero>
-    </MainLayout>
+    </div>
   );
 }
