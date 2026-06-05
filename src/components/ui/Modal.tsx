@@ -6,12 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  className?: string;
+  headerClassName?: string;
 }
 
-export const Modal = ({ isOpen, onClose, title, children, footer }: ModalProps) => {
+export const Modal = ({ isOpen, onClose, title, children, footer, className = "bg-white", headerClassName = "bg-[var(--color-neo-secondary)]" }: ModalProps) => {
   // Prevent background scrolling when open
   useEffect(() => {
     if (isOpen) {
@@ -40,9 +42,9 @@ export const Modal = ({ isOpen, onClose, title, children, footer }: ModalProps) 
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             exit={{ scale: 0.8, opacity: 0, rotate: 5 }}
             transition={{ type: "spring", bounce: 0.6, duration: 0.5 }}
-            className="bg-white neo-border neo-shadow flex flex-col w-full max-w-lg text-neo-text relative z-10 origin-center text-left max-h-[90vh]"
+            className={`${className} neo-border neo-shadow flex flex-col w-full max-w-lg text-neo-text relative z-10 origin-center text-left max-h-[90vh]`}
           >
-            <div className="p-4 border-b-3 border-neo-text flex justify-between items-center bg-[var(--color-neo-secondary)] shrink-0">
+            <div className={`p-4 border-b-3 border-neo-text flex justify-between items-center shrink-0 ${headerClassName}`}>
               <h2 className="text-xl font-bold">{title}</h2>
               <button type="button" onClick={onClose} className="cursor-pointer hover:bg-black/10 rounded-full p-1 border-2 border-transparent hover:border-neo-text transition-colors">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -55,7 +57,7 @@ export const Modal = ({ isOpen, onClose, title, children, footer }: ModalProps) 
               {children}
             </div>
             {footer && (
-              <div className="p-4 border-t-3 border-neo-text bg-[#F5F5F0] flex justify-end gap-3 shrink-0">
+              <div className="p-4 border-t-3 border-neo-text bg-black/5 flex justify-end gap-3 shrink-0">
                 {footer}
               </div>
             )}
