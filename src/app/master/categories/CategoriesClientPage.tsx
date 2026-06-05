@@ -41,7 +41,7 @@ export const CategoriesClientPage = ({ initialCategories }: CategoriesClientPage
   const { addToast } = useToast();
 
   const methods = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
+    resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: '',
       description: '',

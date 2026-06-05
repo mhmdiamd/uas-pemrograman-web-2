@@ -62,7 +62,7 @@ export const TransactionsClientPage = ({ initialTransactions, transactionTypes }
   const { addToast } = useToast();
 
   const methods = useForm<TransactionFormValues>({
-    resolver: zodResolver(transactionSchema),
+    resolver: zodResolver(transactionSchema) as any,
     defaultValues: {
       transactionNumber: '',
       transactionDate: new Date().toISOString().split('T')[0],

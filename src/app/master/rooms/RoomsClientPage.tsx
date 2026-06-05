@@ -50,7 +50,7 @@ export const RoomsClientPage = ({ initialRooms, initialBuildings }: RoomsClientP
   const { addToast } = useToast();
 
   const methods = useForm<RoomFormValues>({
-    resolver: zodResolver(roomSchema),
+    resolver: zodResolver(roomSchema) as any,
     defaultValues: {
       name: '',
       floor: '',
@@ -121,7 +121,7 @@ export const RoomsClientPage = ({ initialRooms, initialBuildings }: RoomsClientP
         await createRoom({
           name: formData.name,
           floor: formData.floor || undefined,
-          buildingId: formData.buildingId || undefined,
+          buildingId: formData.buildingId as string,
         });
         addToast('New room has been added successfully.', 'success');
       }

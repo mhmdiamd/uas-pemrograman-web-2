@@ -52,7 +52,7 @@ export const ItemsClientPage = ({ initialItems, initialItemTypes }: ItemsClientP
   const { addToast } = useToast();
 
   const methods = useForm<ItemFormValues>({
-    resolver: zodResolver(itemSchema),
+    resolver: zodResolver(itemSchema) as any,
     defaultValues: {
       name: '',
       unit: 'Pcs',

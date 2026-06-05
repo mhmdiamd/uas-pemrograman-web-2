@@ -39,7 +39,7 @@ export const BuildingsClientPage = ({ initialBuildings }: BuildingsClientPagePro
   const { addToast } = useToast();
 
   const methods = useForm<BuildingFormValues>({
-    resolver: zodResolver(buildingSchema),
+    resolver: zodResolver(buildingSchema) as any,
     defaultValues: {
       name: '',
     }

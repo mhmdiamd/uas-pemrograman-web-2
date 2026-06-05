@@ -39,7 +39,7 @@ export const TransactionTypesClientPage = ({ initialTransactionTypes }: Transact
   const { addToast } = useToast();
 
   const methods = useForm<TransactionTypeFormValues>({
-    resolver: zodResolver(transactionTypeSchema),
+    resolver: zodResolver(transactionTypeSchema) as any,
     defaultValues: {
       name: '',
     }
