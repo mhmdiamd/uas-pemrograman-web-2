@@ -55,7 +55,7 @@ export const DashboardClientPage = ({ metrics, recentTransactions, statusDistrib
     []
   );
 
-  const totalAssetsFromStatus = statusDistribution.reduce((sum, item) => sum + item.count, 0);
+  const totalAssetsFromStatus = statusDistribution.reduce((sum: number, item: any) => sum + item.count, 0);
 
   return (
     <>

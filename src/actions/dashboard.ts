@@ -15,7 +15,7 @@ export async function getDashboardMetrics() {
   const inventories = await prisma.inventory.findMany({
     select: { quantity: true, price: true }
   });
-  const totalValue = inventories.reduce((sum: number, inv) => {
+  const totalValue = inventories.reduce((sum: number, inv: any) => {
     return sum + (inv.quantity * Number(inv.price));
   }, 0);
 
